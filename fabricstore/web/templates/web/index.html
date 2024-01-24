@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if fabrics %}
+<ol>
+    {% for fabric in fabrics %}
+    <li>{{fabric.name}}</li>
+    {% endfor %}
+</ol>
+{% else %}
+<p>در حال حاضر هیچ محصولی موجود نیست</p>
+{% endif %}
+{% endblock content %}

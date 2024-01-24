@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}پارچه سرای محمد{% endblock title %}</title>
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+<body>
+    {% load static %}
+    <img src="{% static 'images/logo.jpg' %}" alt="لوگو پارچه سرای محمد">
+
+    <!-- اضافه کردن فرم جستجو -->
+    <form action="{% url 'search' %}" method="get">
+        <input type="text" name="query" placeholder="جستجو در پارچه‌ها" required>
+        <button type="submit">جستجو</button>
+    </form>
+
+    {% block content %}{% endblock content %}
+</body>
+</html>

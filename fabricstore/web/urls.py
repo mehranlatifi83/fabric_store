@@ -1,7 +1,8 @@
+# urls.py
 from django.urls import path
-
-from . import views
+from .views import index, search  # فرض بر این است که تابع search را اضافه کرده‌اید
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path('', index, name='index'),
+    path('search/', search, name='search'),  # URL جستجو
 ]

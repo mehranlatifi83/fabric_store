@@ -1,6 +1,13 @@
+# views.py
 from django.shortcuts import render
-from django.http import HttpResponse
-
+from .models import Fabric  # فرض بر این است که مدل Fabric را ایجاد کرده‌اید
 
 def index(request):
-    return HttpResponse("<h1>سلام</h1>\nبه صفحه اصلی سایت خوش اومدین.")
+    fabrics = Fabric.objects.all()
+    return render(request, 'web/index.html', {"fabrics": fabrics})
+
+# اضافه کردن تابع جستجو
+def search(request):
+    query = request.GET.get('query', '')
+    results = Fabric.objects.filter(name__icontains=query)  # فرض بر این است که name فیلدی در مدل Fabric است
+    return render(request, 'web/search_results.html', {'fabrics': results, "search_text" : query})
