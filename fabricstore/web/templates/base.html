@@ -8,6 +8,19 @@
 <body>
     {% load static %}
     <img src="{% static 'images/logo.jpg' %}" alt="لوگو پارچه سرای محمد">
+    <nav>
+        <ul>
+            {% if not request.path == '/' %}
+                <li><a href="{% url 'index' %}">صفحه اصلی</a></li>
+            {% endif %}
+            {% if user.is_authenticated %}
+            <p>سلام {{user.first_name}} {{user.last_name}} عزیز خوش آمدین</p>
+                <li><a href="{% url 'user_profile' %}">رفتن به پروفایل</a></li>
+            {% else %}
+                <li><a href="{% url 'user_login' %}">ورود</a></li>
+            {% endif %}
+        </ul>
+    </nav>
 
     <!-- اضافه کردن فرم جستجو -->
     <form action="{% url 'search' %}" method="get">
