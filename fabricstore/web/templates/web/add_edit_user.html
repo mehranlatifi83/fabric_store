@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}{% if user_object.id %}ویرایش کاربر{% else %}افزودن کاربر جدید{% endif %}|{{ block.super }}{% endblock %}
+
+{% block content %}
+    <h2>{% if user_object.id %}ویرایش کاربر{% else %}افزودن کاربر جدید{% endif %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">ذخیره</button>
+    </form>
+{% endblock %}

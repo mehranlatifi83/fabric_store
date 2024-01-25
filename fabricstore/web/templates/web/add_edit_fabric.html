@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}{% if fabric.id %}ویرایش پارچه{% else %}افزودن پارچه جدید{% endif %}|{{ block.super }}{% endblock %}
+
+{% block content %}
+    <h2>{% if fabric.id %}ویرایش پارچه{% else %}افزودن پارچه جدید{% endif %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">ذخیره</button>
+    </form>
+{% endblock %}

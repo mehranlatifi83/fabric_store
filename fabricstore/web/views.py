@@ -1,9 +1,9 @@
 # views.py
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
-from .forms import UserLoginForm, UserRegistrationForm
+from .forms import UserLoginForm, UserRegistrationForm, FabricForm
 from .models import Fabric, MyUser
-
+from django.contrib.auth.hashers import make_password
 
 def index(request):
     fabrics = Fabric.objects.all()
@@ -73,19 +73,62 @@ def admin_settings(request):
     return render(request, 'web/admin_settings.html', {"users": users, "fabrics": fabrics})
 
 def add_user(request):
-    pass
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            # برای رمزگذاری پسورد قبل از ذخیره سازی
+            form.instance.password = make_password(form.cleaned_data.get('password1'))
+            form.save()
+            return redirect('admin_settings')
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'web/add_edit_user.html', {'form': form})
 
 def edit_user(request, user_id):
-    pass
+    user = get_object_or_404(MyUser, id=user_id)
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST, instance=user)
+        if form.is_valid():
+            # به‌روزرسانی پسورد اگر وارد شده باشد
+            if form.cleaned_data.get('password1'):
+                user.password = make_password(form.cleaned_data.get('password1'))
+            user.save()
+            return redirect('admin_settings')
+    else:
+        form = UserRegistrationForm(instance=user)
+    return render(request, 'web/add_edit_user.html', {'form': form, 'user_object': user})
 
 def delete_user(request, user_id):
-    pass
+    user = get_object_or_404(MyUser, id=user_id)
+    if request.method == 'POST':
+        user.delete()
+        return redirect('admin_settings')
+    return render(request, 'web/delete_confirm.html', {'user': user})
 
 def add_fabric(request):
-    pass
+    if request.method == 'POST':
+        form = FabricForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_settings')
+    else:
+        form = FabricForm()
+    return render(request, 'web/add_edit_fabric.html', {'form': form})
 
 def edit_fabric(request, fabric_id):
-    pass
+    fabric = get_object_or_404(Fabric, id=fabric_id)
+    if request.method == 'POST':
+        form = FabricForm(request.POST, instance=fabric)
+        if form.is_valid():
+            form.save()
+            return redirect('admin_settings')
+    else:
+        form = FabricForm(instance=fabric)
+    return render(request, 'web/add_edit_fabric.html', {'form': form, 'fabric': fabric})
 
 def delete_fabric(request, fabric_id):
-    pass
+    fabric = get_object_or_404(Fabric, id=fabric_id)
+    if request.method == 'POST':
+        fabric.delete()
+        return redirect('admin_settings')
+    return render(request, 'web/delete_confirm.html', {'user': user})

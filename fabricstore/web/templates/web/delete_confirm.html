@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>تأیید حذف</h2>
+    <p>آیا از حذف {{ user.first_name }} {{ user.last_name }} مطمئن هستید؟</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">بله، حذف کن</button>
+        <a href="{% url 'admin_settings' %}">انصراف</a>
+    </form>
+{% endblock %}

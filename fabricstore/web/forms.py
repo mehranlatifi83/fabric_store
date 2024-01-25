@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import MyUser
+from .models import MyUser, Fabric
 
 class UserLoginForm(forms.Form):
     phone = forms.CharField()
@@ -8,10 +8,10 @@ class UserLoginForm(forms.Form):
 class UserRegistrationForm(forms.ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
-
+    is_admin = forms.BooleanField(label='Is Admin', required=False)
     class Meta:
         model = MyUser
-        fields = ('phone', 'first_name', 'last_name')
+        fields = ('phone', 'first_name', 'last_name', 'is_admin')
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -26,3 +26,7 @@ class UserRegistrationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+class FabricForm(forms.ModelForm):
+    class Meta:
+        model = Fabric
+        fields = ['name']
