@@ -1,6 +1,6 @@
 # urls.py
 from django.urls import path
-from .views import index, search, user_login, password_login, user_register, user_profile
+from .views import index, search, user_login, password_login, user_register, user_profile, admin_settings
 
 urlpatterns = [
     path('', index, name='index'),

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}تنظیمات مدیر|{{ block.super }}{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated and user.is_admin %}
+        <h2>صفحه تنظیمات مدیریت</h2>
+        <!-- محتوای تنظیمات مدیریت -->
+        <p>اینجا می‌توانید تنظیمات مدیریتی خود را مدیریت کنید.</p>
+    {% else %}
+        <h2>دسترسی محدود</h2>
+        <p>متاسفانه شما اجازه دسترسی به این صفحه را ندارید.</p>
+    {% endif %}
+{% endblock %}
