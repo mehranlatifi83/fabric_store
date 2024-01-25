@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
-{% block title %}پروفایل من|پارچه سرای محمد{% endblock title %}
+{% block title %}پروفایل من|{{ block.super }}{% endblock %}
 {% block content %}
 <h2>اطلاعات حساب من</h2>
 <p>نام من: {{user.first_name}}</p>
 <p>نام خانوادگی من: {{user.last_name}}</p>
 <p>شماره تلفن من: {{user.phone}}</p>
-{% endblock content %}
+{% endblock %}

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}نتایج جستجو برای {{search_text}}|پارچه سرای محمد{% endblock title %}
+{% block title %}نتایج جستجو برای {{search_text}}|{{ block.super }}{% endblock %}
 {% block content %}
 {% if fabrics %}
 <ol>
@@ -10,4 +10,4 @@
 {% else %}
 <p>موردی پیدا نشد</p>
 {% endif %}
-{% endblock content %}
+{% endblock %}

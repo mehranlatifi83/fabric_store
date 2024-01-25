@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}ورود به سیستم|پارچه سرای محمد{% endblock title %}
+{% block title %}ورود به سیستم|{{ block.super }}{% endblock %}
 {% block content %}
 <h2>ورود به سیستم</h2>
 <form method="post" action="{% url 'user_login' %}">
@@ -7,4 +7,4 @@
     <input type="text" name="phone" placeholder="شماره تلفن" maxlength="11">
     <button type="submit">ادامه</button>
 </form>
-{% endblock content %}
+{% endblock %}
