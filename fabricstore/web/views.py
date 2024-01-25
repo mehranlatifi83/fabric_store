@@ -68,4 +68,6 @@ def user_profile(request):
     return render(request, 'web/user_profile.html')
 
 def admin_settings(request):
-    return render(request, 'web/admin_settings.html')
+    users = MyUser.objects.all()
+    fabrics = Fabric.objects.all()
+    return render(request, 'web/admin_settings.html', {"users": users, "fabrics": fabrics})
