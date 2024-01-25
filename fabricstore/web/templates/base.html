@@ -16,6 +16,9 @@
             {% if user.is_authenticated %}
             <p>سلام {{user.first_name}} {{user.last_name}} عزیز خوش آمدین</p>
                 <li><a href="{% url 'user_profile' %}">رفتن به پروفایل</a></li>
+                {% if user.is_admin %}
+                <li><a href="{% url 'admin_settings' %}"تنظیمات</li>
+                {% endif %}
             {% else %}
                 <li><a href="{% url 'user_login' %}">ورود</a></li>
             {% endif %}
