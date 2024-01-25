@@ -35,6 +35,7 @@ def user_login(request):
         form = UserLoginForm()
     return render(request, 'web/login.html', {'form': form})
 
+
 def password_login(request, phone):
     if request.method == 'POST':
         password = request.POST.get('password')
@@ -47,6 +48,7 @@ def password_login(request, phone):
             return render(request, 'web/password_login.html', {'error': 'پسورد اشتباه است', 'phone': phone})
     else:
         return render(request, 'web/password_login.html', {'phone': phone})
+
 
 def user_register(request, phone):
     if request.method == 'POST':
@@ -61,5 +63,9 @@ def user_register(request, phone):
         form = UserRegistrationForm(initial={'phone': phone})
     return render(request, 'web/register.html', {'form': form, "phone": phone})
 
+
 def user_profile(request):
     return render(request, 'web/user_profile.html')
+
+def admin_settings(request):
+    return render(request, 'web/admin_settings.html')
