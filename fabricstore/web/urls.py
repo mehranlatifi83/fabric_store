@@ -9,4 +9,5 @@ urlpatterns = [
     path('profile/', user_profile, name='user_profile'),
     path('login/password/<str:phone>/', password_login, name='password_login'),
     path('register/<str:phone>/', user_register, name='user_register'),
+    path("setting/", admin_settings, name="admin_settings"),
 ]
