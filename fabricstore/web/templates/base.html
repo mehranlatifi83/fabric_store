@@ -14,23 +14,33 @@
                 <li><a href="{% url 'index' %}">صفحه اصلی</a></li>
             {% endif %}
             {% if user.is_authenticated %}
-            <p>سلام {{user.first_name}} {{user.last_name}} عزیز خوش آمدین</p>
-                <li><a href="{% url 'user_profile' %}">رفتن به پروفایل</a></li>
-                {% if user.is_admin %}
-                <li><a href="{% url 'admin_settings' %}">تنظیمات</a></li>
-                {% endif %}
+            <div class="user-menu">
+                <a href="#" onclick="toggleMenu()">سلام {{user.first_name}} {{user.last_name}} عزیز خوش آمدین</a>
+                <div id="user-dropdown" style="display: none;">
+                    <a href="{% url 'user_profile' %}">رفتن به پروفایل</a>
+                    {% if user.is_admin %}
+                    <a href="{% url 'admin_settings' %}">تنظیمات</a>
+                    {% endif %}
+                </div>
+            </div>
             {% else %}
                 <li><a href="{% url 'user_login' %}">ورود</a></li>
             {% endif %}
         </ul>
     </nav>
 
-    <!-- اضافه کردن فرم جستجو -->
     <form action="{% url 'search' %}" method="get">
         <input type="text" name="query" placeholder="جستجو در پارچه‌ها" required>
         <button type="submit">جستجو</button>
     </form>
 
     {% block content %}{% endblock %}
+
+    <script>
+    function toggleMenu() {
+        var dropdown = document.getElementById("user-dropdown");
+        dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+    }
+    </script>
 </body>
 </html>
