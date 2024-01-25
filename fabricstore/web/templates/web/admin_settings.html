@@ -5,8 +5,31 @@
 {% block content %}
     {% if user.is_authenticated and user.is_admin %}
         <h2>صفحه تنظیمات مدیریت</h2>
-        <!-- محتوای تنظیمات مدیریت -->
-        <p>اینجا می‌توانید تنظیمات مدیریتی خود را مدیریت کنید.</p>
+
+        <!-- فرم با دکمه‌های رادیویی -->
+        <form id="tabForm">
+            <input type="radio" id="usersTab" name="adminTab" value="Users" onclick="openTab('Users')" checked>
+            <label for="usersTab">کاربرها</label>
+
+            <input type="radio" id="fabricsTab" name="adminTab" value="Fabrics" onclick="openTab('Fabrics')">
+            <label for="fabricsTab">پارچه‌ها</label>
+        </form>
+
+        <!-- محتوای تب‌ها -->
+        <div id="Users" class="tab-content">
+            <!-- محتوای مربوط به کاربران -->
+            <p>مدیریت کاربران اینجا انجام می‌شود.</p>
+        </div>
+
+        <div id="Fabrics" class="tab-content">
+            <!-- محتوای مربوط به پارچه‌ها -->
+            <p>مدیریت پارچه‌ها اینجا انجام می‌شود.</p>
+        </div>
+        
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'web/admin_settings_style.css' %}">
+        <script src="{% static 'web/admin_settings_script.js' %}"></script>
+        
     {% else %}
         <h2>دسترسی محدود</h2>
         <p>متاسفانه شما اجازه دسترسی به این صفحه را ندارید.</p>
