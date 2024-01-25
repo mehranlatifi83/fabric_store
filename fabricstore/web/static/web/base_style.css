@@ -1,6 +1,36 @@
-.user-menu {
-    position: relative;
-    display: inline-block;
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: #333;
+    overflow: hidden;
+}
+
+nav ul li {
+    float: left;
+}
+
+nav ul li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    background-color: #111;
+}
+
+.user-menu a {
+    color: white;
 }
 
 #user-dropdown {
@@ -16,6 +46,34 @@
     padding: 12px 16px;
     text-decoration: none;
     display: block;
+    border-bottom: 1px solid #ddd;
 }
 
-#user-dropdown a:hover {background-color: #f1f1f1;}
+#user-dropdown a:hover {
+    background-color: #f1f1f1;
+}
+
+form {
+    margin-top: 20px;
+    text-align: center;
+}
+
+form input[type="text"] {
+    padding: 10px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+form button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #555;
+}
