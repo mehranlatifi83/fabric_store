@@ -71,3 +71,21 @@ def admin_settings(request):
     users = MyUser.objects.all()
     fabrics = Fabric.objects.all()
     return render(request, 'web/admin_settings.html', {"users": users, "fabrics": fabrics})
+
+def add_user(request):
+    pass
+
+def edit_user(request, user_id):
+    pass
+
+def delete_user(request, user_id):
+    pass
+
+def add_fabric(request):
+    pass
+
+def edit_fabric(request, fabric_id):
+    pass
+
+def delete_fabric(request, fabric_id):
+    pass
