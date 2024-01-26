@@ -34,10 +34,11 @@ class UserRegistrationForm(forms.ModelForm):
 class FabricForm(forms.ModelForm):
     class Meta:
         model = Fabric
-        fields = ['name', 'price', 'description', 'image']
+        fields = ['name', 'price', 'description', 'image', 'category']
         labels = {
             "name": "نام پارچه",
             "price": "قیمت هر متر پارچه",
             "description": "توضیحات راجع به محصول",
             "image": "عکس پارچه",
+            "category": "دسته بندی محصول",
         }
