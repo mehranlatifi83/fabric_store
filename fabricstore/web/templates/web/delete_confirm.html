@@ -4,7 +4,11 @@
 {% block content %}
 {% if user.is_authenticated and user.is_admin %}
     <h2>تأیید حذف</h2>
-    <p>آیا از حذف {{ user.first_name }} {{ user.last_name }} مطمئن هستید؟</p>
+    {% if user_object %}
+    <p>آیا از حذف {{ user_object.first_name }} {{ user_object.last_name }} مطمئن هستید؟</p>
+    {% elif fabric %}
+    <p>آیا از حذف {{ fabric.name }} مطمئن هستید؟</p>
+    {% endif %}
 
     <form method="post">
         {% csrf_token %}

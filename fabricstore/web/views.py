@@ -103,7 +103,7 @@ def delete_user(request, user_id):
     if request.method == 'POST':
         user.delete()
         return redirect('admin_settings')
-    return render(request, 'web/delete_confirm.html', {'user': user})
+    return render(request, 'web/delete_confirm.html', {'user_object': user})
 
 def add_fabric(request):
     if request.method == 'POST':
