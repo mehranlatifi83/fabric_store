@@ -8,6 +8,7 @@ from django.http import JsonResponse
 import json
 import os
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     fabrics = Fabric.objects.all()
@@ -137,11 +138,14 @@ def delete_fabric(request, fabric_id):
         return redirect('admin_settings')
     return render(request, 'web/delete_confirm.html', {'fabric': fabric})
 
+@login_required
 def add_address(request):
     if request.method == 'POST':
         form = AddressForm(request.POST)
         if form.is_valid():
-            form.save()
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
             return redirect('add_address')
     else:
         form = AddressForm()
