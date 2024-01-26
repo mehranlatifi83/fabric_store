@@ -14,7 +14,8 @@ class Fabric(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField()
     description = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(
+        Category, on_delete=models.SET_NULL, null=True)
     image = models.ImageField(upload_to='fabrics/', blank=True, null=True)
 
     def __str__(self):
@@ -61,3 +62,12 @@ class MyUser(AbstractBaseUser):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+class Order(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.SET_NULL, null=True)
+    date_ordered = models.DateTimeField(auto_now_add=True)
+    complete = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.id)
