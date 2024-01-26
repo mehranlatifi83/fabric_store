@@ -132,3 +132,6 @@ def delete_fabric(request, fabric_id):
         fabric.delete()
         return redirect('admin_settings')
     return render(request, 'web/delete_confirm.html', {'fabric': fabric})
+
+def add_address(request):
+    pass
