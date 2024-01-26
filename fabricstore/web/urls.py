@@ -20,4 +20,5 @@ urlpatterns = [
     path("deleteuser/<str:user_id>", delete_user, name="delete_user"),
     path("deletefabric/<fabric_id>", delete_fabric, name="delete_fabric"),
     path("addaddress/", add_address, name="add_address")
+    path('ajax/load-cities/', views.load_cities, name='ajax_load_cities'),
 ]

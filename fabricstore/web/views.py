@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from .forms import UserLoginForm, UserRegistrationForm, FabricForm, AddressForm
 from .models import Fabric, MyUser
 from django.contrib.auth.hashers import make_password
+from django.http import JsonResponse
 
 def index(request):
     fabrics = Fabric.objects.all()
@@ -142,3 +143,8 @@ def add_address(request):
     else:
         form = AddressForm()
     return render(request, 'web/add_address_for_user.html', {'form': form})
+
+def load_cities(request):
+    state_id = request.GET.get('state_id')
+    cities = City.objects.filter(state_id=state_id).order_by('name')
+    return JsonResponse({"cities": list(cities.values('id', 'name'))})
