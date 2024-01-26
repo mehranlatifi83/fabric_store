@@ -7,6 +7,17 @@
 <p>نام من: {{ user.first_name }}</p>
 <p>نام خانوادگی من: {{ user.last_name }}</p>
 <p>شماره تلفن من: {{ user.phone }}</p>
+<h3>آدرس های من</h3>
+{% if user_addresses %}
+    <p>شما آدرس‌های زیر را ثبت کرده‌اید:</p>
+    <ul>
+        {% for address in user_addresses %}
+            <li>{{ address.address }} در شهر {{ address.city }} در استان {{ address.state }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>شما هنوز هیچ آدرسی ثبت نکرده‌اید.</p>
+{% endif %}
 
 <!-- فرم خروج مخفی -->
 <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">

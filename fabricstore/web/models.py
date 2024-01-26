@@ -90,7 +90,7 @@ class Address(models.Model):
     zipcode = models.CharField(max_length=20)
 
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}'s Address"
+        return f"آدرس {self.user.first_name} {self.user.last_name}"
 
 class State(models.Model):
     name = models.CharField(max_length=100)

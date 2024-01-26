@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from .forms import UserLoginForm, UserRegistrationForm, FabricForm, AddressForm
-from .models import Fabric, MyUser, State, City
+from .models import Fabric, MyUser, State, City, Address
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 import json
@@ -70,7 +70,8 @@ def user_register(request, phone):
 
 
 def user_profile(request):
-    return render(request, 'web/user_profile.html')
+    user_addresses = Address.objects.filter(user=request.user)
+    return render(request, 'web/user_profile.html', {"user_addresses": user_addresses})
 
 def admin_settings(request):
     users = MyUser.objects.all()
