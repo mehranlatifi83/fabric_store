@@ -107,7 +107,7 @@ def delete_user(request, user_id):
 
 def add_fabric(request):
     if request.method == 'POST':
-        form = FabricForm(request.POST)
+        form = FabricForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('admin_settings')
@@ -118,7 +118,7 @@ def add_fabric(request):
 def edit_fabric(request, fabric_id):
     fabric = get_object_or_404(Fabric, id=fabric_id)
     if request.method == 'POST':
-        form = FabricForm(request.POST, instance=fabric)
+        form = FabricForm(request.POST, request.FILES, instance=fabric)
         if form.is_valid():
             form.save()
             return redirect('admin_settings')

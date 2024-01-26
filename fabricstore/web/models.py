@@ -15,7 +15,7 @@ class Fabric(models.Model):
     price = models.IntegerField()
     description = models.TextField()
     category = models.ForeignKey(
-        Category, on_delete=models.SET_NULL, null=True)
+    Category, on_delete=models.SET_NULL, null=True)
     image = models.ImageField(upload_to='fabrics/', blank=True, null=True)
 
     def __str__(self):

@@ -54,7 +54,7 @@
                 <tbody>
                     {% for fabric in fabrics %}
                     <tr>
-                        <td>{{ fabric.name }}</td>
+                        <td><img src="{{fabric.emage}}" alt="پارچه {{fabric.name}} با قیمت متری {{fabric.price}} تومان، توضیحات محصول: {{fabric.description}}، در دسته بندی {{fabric.category}}"></td>
                         <td>
                             <a href="{% url 'edit_fabric' fabric.id %}">ویرایش</a> |
                             <a href="{% url 'delete_fabric' fabric.id %}">حذف</a>

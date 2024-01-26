@@ -4,7 +4,7 @@
 {% block content %}
 {% if user.is_authenticated and user.is_admin %}
     <h2>{% if fabric.id %}ویرایش پارچه{% else %}افزودن پارچه جدید{% endif %}</h2>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">ذخیره</button>
