@@ -1,7 +1,7 @@
 # urls.py
 from django.urls import path
 from .views import index, search, user_login, password_login, user_register, user_profile, admin_settings, add_user, edit_user, delete_user, add_fabric, edit_fabric, delete_fabric
-from .views import add_address
+from .views import add_address, load_cities
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -19,6 +19,6 @@ urlpatterns = [
     path("editfabric/<str:fabric_id>", edit_fabric, name="edit_fabric"),
     path("deleteuser/<str:user_id>", delete_user, name="delete_user"),
     path("deletefabric/<fabric_id>", delete_fabric, name="delete_fabric"),
-    path("addaddress/", add_address, name="add_address")
-    path('ajax/load-cities/', views.load_cities, name='ajax_load_cities'),
+    path("addaddress/", add_address, name="add_address"),
+    path('ajax/load-cities/', load_cities, name='ajax_load_cities'),
 ]

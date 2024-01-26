@@ -44,12 +44,16 @@ class FabricForm(forms.ModelForm):
         }
 
 class AddressForm(forms.ModelForm):
-    state = forms.ModelChoiceField(queryset=State.objects.all(), empty_label="انتخاب استان")
-    city = forms.ModelChoiceField(queryset=City.objects.none(), empty_label="انتخاب شهرستان")
+    state = forms.ModelChoiceField(queryset=State.objects.all(), empty_label="انتخاب استان", label="استان")
+    city = forms.ModelChoiceField(queryset=City.objects.none(), empty_label="انتخاب شهرستان", label="شهر")
 
     class Meta:
         model = Address
-        fields = ['address', 'city', 'state', 'zipcode']
+        fields = ['state', 'city', 'zipcode', 'address']
+        labels = {
+            "zipcode": "کد پستی",
+            "address": "آدرس کامل",
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
