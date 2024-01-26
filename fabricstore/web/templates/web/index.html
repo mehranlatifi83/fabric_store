@@ -3,7 +3,15 @@
 {% if fabrics %}
 <ol>
     {% for fabric in fabrics %}
-    <li>{{fabric.name}}</li>
+    <li>
+        {% if fabric.image %}
+        <img src="{{ fabric.image }}"><br />
+        {% endif %}
+        پارچه {{fabric.name}}<br />
+        قیمت هر متر: {{ fabric.price }} تومان<br />
+        توضیحات محصول: {{ fabric.description }}<br />
+        دسته بندی پارچه: {{ fabric.category }}
+    </li>
     {% endfor %}
 </ol>
 {% else %}
