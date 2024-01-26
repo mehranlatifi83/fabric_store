@@ -1,7 +1,7 @@
 # views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
-from .forms import UserLoginForm, UserRegistrationForm, FabricForm
+from .forms import UserLoginForm, UserRegistrationForm, FabricForm, AddressForm
 from .models import Fabric, MyUser
 from django.contrib.auth.hashers import make_password
 
@@ -134,4 +134,11 @@ def delete_fabric(request, fabric_id):
     return render(request, 'web/delete_confirm.html', {'fabric': fabric})
 
 def add_address(request):
-    pass
+    if request.method == 'POST':
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('add_address')
+    else:
+        form = AddressForm()
+    return render(request, 'web/add_address_for_user.html', {'form': form})
