@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import MyUser, Fabric
+from .models import MyUser, Fabric, Address, City, State
 
 class UserLoginForm(forms.Form):
     phone = forms.CharField()
@@ -42,3 +42,20 @@ class FabricForm(forms.ModelForm):
             "image": "عکس پارچه",
             "category": "دسته بندی محصول",
         }
+
+class AddressForm(forms.ModelForm):
+    state = forms.ModelChoiceField(queryset=State.objects.all(), empty_label="انتخاب استان")
+    city = forms.ModelChoiceField(queryset=City.objects.none(), empty_label="انتخاب شهرستان")
+
+    class Meta:
+        model = Address
+        fields = ['address', 'city', 'state', 'zipcode']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'state' in self.data:
+            try:
+                state_id = int(self.data.get('state'))
+                self.fields['city'].queryset = City.objects.filter(state_id=state_id).order_by('name')
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty City queryset
