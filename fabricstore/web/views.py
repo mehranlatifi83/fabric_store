@@ -2,9 +2,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from .forms import UserLoginForm, UserRegistrationForm, FabricForm, AddressForm
-from .models import Fabric, MyUser
+from .models import Fabric, MyUser, State, City
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
+import json
+import os
+from django.conf import settings
 
 def index(request):
     fabrics = Fabric.objects.all()
@@ -148,3 +151,18 @@ def load_cities(request):
     state_id = request.GET.get('state_id')
     cities = City.objects.filter(state_id=state_id).order_by('name')
     return JsonResponse({"cities": list(cities.values('id', 'name'))})
+
+def load_states_and_cities(request):
+    # مسیر فایل JSON
+    file_path = os.path.join(settings.BASE_DIR, 'web', 'data', 'provinces-any-cities.json')
+
+    # خواندن فایل JSON
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+
+        # ایجاد استان‌ها و شهرها در پایگاه داده
+        for state_data in data:
+            state, created = State.objects.get_or_create(name=state_data['name'])
+            for city_data in state_data['cities']:
+                City.objects.get_or_create(name=city_data['name'], state=state)
+    return render(request, 'web/load_states_cities.html')
