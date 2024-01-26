@@ -131,4 +131,4 @@ def delete_fabric(request, fabric_id):
     if request.method == 'POST':
         fabric.delete()
         return redirect('admin_settings')
-    return render(request, 'web/delete_confirm.html', {'user': user})
+    return render(request, 'web/delete_confirm.html', {'fabric': fabric})

@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
+{% block title %}تأیید حذف|{{ block.super }}{% endblock %}
 
 {% block content %}
+{% if user.is_authenticated and user.is_admin %}
     <h2>تأیید حذف</h2>
     <p>آیا از حذف {{ user.first_name }} {{ user.last_name }} مطمئن هستید؟</p>
 
@@ -9,4 +11,8 @@
         <button type="submit">بله، حذف کن</button>
         <a href="{% url 'admin_settings' %}">انصراف</a>
     </form>
+    {% else %}
+        <h2>دسترسی محدود</h2>
+        <p>متاسفانه شما اجازه دسترسی به این صفحه را ندارید.</p>
+    {% endif %}
 {% endblock %}
