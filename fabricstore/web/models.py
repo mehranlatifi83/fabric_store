@@ -14,8 +14,7 @@ class Fabric(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField()
     description = models.TextField()
-    category = models.ForeignKey(
-    Category, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     image = models.ImageField(upload_to='fabrics/', blank=True, null=True)
 
     def __str__(self):
@@ -92,3 +91,16 @@ class Address(models.Model):
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}'s Address"
+
+class State(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+class City(models.Model):
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
