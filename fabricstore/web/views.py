@@ -9,6 +9,7 @@ import json
 import os
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 def index(request):
     fabrics = Fabric.objects.all()
@@ -20,7 +21,7 @@ def index(request):
 def search(request):
     query = request.GET.get('query', '')
     # فرض بر این است که name فیلدی در مدل Fabric است
-    results = Fabric.objects.filter(name__icontains=query)
+    results = Fabric.objects.filter(Q(name__icontains=query) | Q(description__icontains=query) | Q(category__name__icontains=query) | Q(price__icontains=query))
     return render(request, 'web/search_results.html', {'fabrics': results, "search_text": query})
 
 
