@@ -57,6 +57,8 @@ class AddressForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['city'].queryset = City.objects.filter(state=self.instance.state).order_by('name')
         if 'state' in self.data:
             try:
                 state_id = int(self.data.get('state'))

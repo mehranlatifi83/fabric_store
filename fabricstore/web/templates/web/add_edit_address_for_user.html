@@ -3,7 +3,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-{% if address.user == user %}
+{% if not address or address.user == user %}
 <h2>{% if  address.id %}ویرایش آدرس {{ address.address }}{% else %}اضافه کردن آدرس جدید{% endif %}</h2>
 <form method="post">
     {% csrf_token %}
