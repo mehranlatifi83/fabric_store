@@ -163,6 +163,13 @@ def edit_address(request, address_id):
         form = AddressForm(instance=address)
     return render(request, 'web/add_edit_address_for_user.html', {'form': form, 'address': address})
 
+def delete_address(request, address_id):
+    address = get_object_or_404(Address, id=address_id)
+    if request.method == 'POST':
+        address.delete()
+        return redirect('user_profile')
+    return render(request, 'web/delete_confirm.html', {'address': address})
+
 def load_cities(request):
     state_id = request.GET.get('state_id')
     cities = City.objects.filter(state_id=state_id).order_by('name')
