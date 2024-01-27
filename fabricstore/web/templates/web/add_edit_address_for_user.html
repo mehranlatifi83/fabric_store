@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{% if  address.id %}ویرایش آدرس {{ address.address }}{% else %}اضافه کردن آدرس جدید{% endif %}|{{ block.super }}{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+{% if address.user == user %}
+<h2>{% if  address.id %}ویرایش آدرس {{ address.address }}{% else %}اضافه کردن آدرس جدید{% endif %}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">ذخیره</button>
+</form>
+<script type="text/javascript">
+    document.getElementById('id_state').onchange = function() {
+        var stateId = this.value;
+        var cityField = document.getElementById('id_city');
+        cityField.innerHTML = '';
+    
+        if (stateId) {
+            fetch(`/ajax/load-cities/?state_id=${stateId}`)
+            .then(response => response.json())
+            .then(data => {
+                data.cities.forEach(function(city) {
+                    var option = new Option(city.name, city.id);
+                    cityField.options.add(option);
+                });
+            });
+        }
+    };
+    </script>
+{% else %}
+    <h2>خطا در ویرایش آدرس</h2>
+    <p>شما اجازه ویرایش این آدرس را ندارید</p>
+{% endif %}
+{% else %}
+<h2>دسترسی محدود</h2>
+<p>شما اجازه دسترسی به این قسمت را تا زمانی که وارد حساب کاربری خودتان نشدید ندارید. لطفا با کلیک کردن بر روی لینک ورود از بالای صفحه اگر حساب دارید وارد حساب کاربری خودتان شوید و اگر ندارید مراحل را انجام داده و ثبت نام خودتان را انجام بدید</p>
+{% endif %}
+{% endblock %}

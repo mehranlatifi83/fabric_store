@@ -141,19 +141,27 @@ def delete_fabric(request, fabric_id):
     return render(request, 'web/delete_confirm.html', {'fabric': fabric})
 
 def add_address(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            form = AddressForm(request.POST)
-            if form.is_valid():
-                address = form.save(commit=False)
-                address.user = request.user
-                address.save()
-                return redirect('add_address')
-        else:
-            form = AddressForm()
-        return render(request, 'web/add_address_for_user.html', {'form': form})
+    if request.method == 'POST':
+        form = AddressForm(request.POST)
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+            return redirect('user_profile')
     else:
-        return HttpResponse("<h1>دسترسی محدود</h1><p>ابتدا وارد حساب کاربری خودتون بشید سپس به این قسمت مراجعه فرمایید</p>")
+        form = AddressForm()
+    return render(request, 'web/add_edit_address_for_user.html', {'form': form})
+
+def edit_address(request, address_id):
+    address = get_object_or_404(Address, id=address_id)
+    if request.method == 'POST':
+        form = AddressForm(request.POST, instance=address)
+        if form.is_valid():
+            form.save()
+            return redirect('user_profile')
+    else:
+        form = AddressForm(instance=address)
+    return render(request, 'web/add_edit_address_for_user.html', {'form': form, 'address': address})
 
 def load_cities(request):
     state_id = request.GET.get('state_id')
