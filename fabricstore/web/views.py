@@ -1,5 +1,6 @@
 # views.py
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from .forms import UserLoginForm, UserRegistrationForm, FabricForm, AddressForm
 from .models import Fabric, MyUser, State, City, Address
@@ -8,7 +9,6 @@ from django.http import JsonResponse
 import json
 import os
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 def index(request):
@@ -140,18 +140,20 @@ def delete_fabric(request, fabric_id):
         return redirect('admin_settings')
     return render(request, 'web/delete_confirm.html', {'fabric': fabric})
 
-@login_required
 def add_address(request):
-    if request.method == 'POST':
-        form = AddressForm(request.POST)
-        if form.is_valid():
-            address = form.save(commit=False)
-            address.user = request.user
-            address.save()
-            return redirect('add_address')
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = AddressForm(request.POST)
+            if form.is_valid():
+                address = form.save(commit=False)
+                address.user = request.user
+                address.save()
+                return redirect('add_address')
+        else:
+            form = AddressForm()
+        return render(request, 'web/add_address_for_user.html', {'form': form})
     else:
-        form = AddressForm()
-    return render(request, 'web/add_address_for_user.html', {'form': form})
+        return HttpResponse("<h1>دسترسی محدود</h1><p>ابتدا وارد حساب کاربری خودتون بشید سپس به این قسمت مراجعه فرمایید</p>")
 
 def load_cities(request):
     state_id = request.GET.get('state_id')
@@ -159,16 +161,19 @@ def load_cities(request):
     return JsonResponse({"cities": list(cities.values('id', 'name'))})
 
 def load_states_and_cities(request):
-    # مسیر فایل JSON
-    file_path = os.path.join(settings.BASE_DIR, 'web', 'data', 'provinces-any-cities.json')
+    if request.user.is_authenticated and request.user.is_admin:
+        # مسیر فایل JSON
+        file_path = os.path.join(settings.BASE_DIR, 'web', 'data', 'provinces-any-cities.json')
 
-    # خواندن فایل JSON
-    with open(file_path, 'r', encoding='utf-8') as file:
-        data = json.load(file)
+        # خواندن فایل JSON
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
 
-        # ایجاد استان‌ها و شهرها در پایگاه داده
-        for state_data in data:
-            state, created = State.objects.get_or_create(name=state_data['name'])
-            for city_data in state_data['cities']:
-                City.objects.get_or_create(name=city_data['name'], state=state)
-    return render(request, 'web/load_states_cities.html')
+            # ایجاد استان‌ها و شهرها در پایگاه داده
+            for state_data in data:
+                state, created = State.objects.get_or_create(name=state_data['name'])
+                for city_data in state_data['cities']:
+                    City.objects.get_or_create(name=city_data['name'], state=state)
+        return render(request, 'web/load_states_cities.html')
+    else:
+        return HttpResponse("شما اجازه دسترسی به این قسمت رو ندارین")
