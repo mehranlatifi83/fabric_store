@@ -1,10 +1,19 @@
 {% extends 'base.html' %}
 {% block title %}نتایج جستجو برای {{search_text}}|{{ block.super }}{% endblock %}
 {% block content %}
+<h2>نتایج جستجو برای {{search_text}}</h2>
 {% if fabrics %}
 <ol>
     {% for fabric in fabrics %}
-    <li>{{fabric.name}}</li>
+    <li>
+        {% if fabric.image %}
+        <img src="{{ fabric.image }}"><br />
+        {% endif %}
+        پارچه {{fabric.name}}<br />
+        قیمت هر متر: {{ fabric.price }} تومان<br />
+        توضیحات محصول: {{ fabric.description }}<br />
+        دسته بندی پارچه: {{ fabric.category }}
+    </li>
     {% endfor %}
 </ol>
 {% else %}
