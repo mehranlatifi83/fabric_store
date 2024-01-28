@@ -1,5 +1,6 @@
 from django import forms
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.forms import ReadOnlyPasswordHashField, PasswordChangeForm
+from django.contrib.auth import get_user_model
 from .models import MyUser, Fabric, Address, City, State
 
 class UserLoginForm(forms.Form):
@@ -69,3 +70,14 @@ class AddressForm(forms.ModelForm):
 
 class EmailChangeForm(forms.Form):
     email = forms.EmailField(label='ایمیل جدید')
+
+User = get_user_model()
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(label='پسورد فعلی', widget=forms.PasswordInput)
+    new_password1 = forms.CharField(label='پسورد جدید', widget=forms.PasswordInput)
+    new_password2 = forms.CharField(label='تایید پسورد جدید', widget=forms.PasswordInput)
+
+    class Meta:
+        model = User
+        fields = ('old_password', 'new_password1', 'new_password2')

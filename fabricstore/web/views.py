@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import authenticate, login
-from .forms import UserLoginForm, UserRegistrationForm, FabricForm, AddressForm, EmailChangeForm
+from django.contrib.auth import authenticate, login, update_session_auth_hash
+from .forms import UserLoginForm, UserRegistrationForm, FabricForm, AddressForm, EmailChangeForm, CustomPasswordChangeForm
 from .models import Fabric, MyUser, State, City, Address, EmailActivation
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
@@ -217,6 +217,18 @@ def activate_email(request, activation_key):
         user.save()
         activation_record.is_activated = True
         activation_record.save()
-        return HttpResponse("ایمیل شما با موفقیت تغییر یافت.")
+        return render(request, "web/user_profile.html", {"message": "ایمیل شما با موفقیت تغییر یافت."})
     except EmailActivation.DoesNotExist:
-        return HttpResponse("درخواست نامعتبر است.")
+        return render(request, "web/user_profile.html", {"message": "درخواست نامعتبر است."})
+
+def change_password(request):
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            print(user)
+            update_session_auth_hash(request, user)  # به روز رسانی session برای جلوگیری از خروج کاربر
+            return render(request, "web/user_profile.html", {"message": "رمز عبور شما با موفقیت تغییر کرد"})
+        else:
+            message = "خطایی در تغییر رمز عبور پیش آمد. لطفا دوباره امتحان کنید"
+            return render(request, "web/user_profile.html", {"message": message})

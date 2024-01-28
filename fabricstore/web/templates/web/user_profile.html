@@ -1,11 +1,11 @@
-    {% extends 'base.html' %}
+        {% extends 'base.html' %}
     {% block title %}پروفایل من|{{ block.super }}{% endblock %}
 
     {% block content %}
     {% if user.is_authenticated %}
         {% if message %}
-        <script>alert("{{ message }}")</script>
-        {% endif %}
+            <script>alert("{{ message }}")</script>
+            {% endif %}
     <h2>اطلاعات حساب من</h2>
     <p>نام من: {{ user.first_name }}</p>
     <p>نام خانوادگی من: {{ user.last_name }}</p>
@@ -36,10 +36,11 @@
 
     <!-- دیالوگ تغییر رمز عبور -->
     <dialog id="passwordDialog">
-        <form method="dialog">
+        <form action="{% url 'change_password' %}" method="post">
+            {% csrf_token %}
             <p><input type="password" name="old_password" placeholder="رمز عبور فعلی"></p>
-            <p><input type="password" name="new_password" placeholder="رمز عبور جدید"></p>
-            <p><input type="password" name="confirm_new_password" placeholder="تایید رمز عبور جدید"></p>
+            <p><input type="password" name="new_password1" placeholder="رمز عبور جدید"></p>
+            <p><input type="password" name="new_password2" placeholder="تایید رمز عبور جدید"></p>
             <p><button type="submit">ذخیره</button></p>
         </form>
     </dialog>
