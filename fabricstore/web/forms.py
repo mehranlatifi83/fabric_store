@@ -11,11 +11,12 @@ class UserRegistrationForm(forms.ModelForm):
     is_admin = forms.BooleanField(label='وضعیت ادمین بودن', required=False)
     class Meta:
         model = MyUser
-        fields = ('phone', 'first_name', 'last_name', 'is_admin')
+        fields = ('phone', 'first_name', 'last_name', 'is_admin', 'email')
         labels = {
             "first_name": "نام",
             "last_name": "نام خانوادگی",
             "phone": "شماره تلفن",
+            "email": "ایمیل",
         }
 
     def clean_password2(self):
