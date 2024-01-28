@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-
+import uuid
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -105,3 +105,13 @@ class Address(models.Model):
 
     def __str__(self):
         return f"آدرس {self.user.first_name} {self.user.last_name}"
+
+class EmailActivation(models.Model):
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    email = models.EmailField()
+    activation_key = models.UUIDField(default=uuid.uuid4, editable=False)
+    is_activated = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.phone

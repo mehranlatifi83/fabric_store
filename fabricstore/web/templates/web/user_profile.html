@@ -1,86 +1,89 @@
-{% extends 'base.html' %}
-{% block title %}پروفایل من|{{ block.super }}{% endblock %}
+    {% extends 'base.html' %}
+    {% block title %}پروفایل من|{{ block.super }}{% endblock %}
 
-{% block content %}
-{% if user.is_authenticated %}
-<h2>اطلاعات حساب من</h2>
-<p>نام من: {{ user.first_name }}</p>
-<p>نام خانوادگی من: {{ user.last_name }}</p>
-<p>شماره تلفن من: {{ user.phone }}</p>
-<!-- دکمه‌های باز کردن دیالوگ -->
-{% if user.email %}
-    <p>ایمیل فعلی: {{ user.email }}</p>
-    <button onclick="openDialog('emailDialog')">ویرایش ایمیل</button>
-{% else %}
-    <button onclick="openDialog('emailDialog')">افزودن ایمیل</button>
-{% endif %}
-<button onclick="openDialog('passwordDialog')">تغییر رمز عبور</button>
-
-<!-- دیالوگ تغییر ایمیل -->
-<dialog id="emailDialog">
-    <form method="dialog">
-        {% if user.email %}
-        <p>ویرایش ایمیل</p>
-        <p><input type="email" name="email" placeholder="ایمیل جدید خود را وارد کنید"></p>
-        {% else %}
-        <p>افزودن ایمیل</p>
-        <p><input type="email" name="email" placeholder="ایمیل خود را وارد کنید"></p>
+    {% block content %}
+    {% if user.is_authenticated %}
+        {% if message %}
+        <script>alert("{{ message }}")</script>
         {% endif %}
-        <p><button type="submit">تایید</button></p>
+    <h2>اطلاعات حساب من</h2>
+    <p>نام من: {{ user.first_name }}</p>
+    <p>نام خانوادگی من: {{ user.last_name }}</p>
+    <p>شماره تلفن من: {{ user.phone }}</p>
+    <!-- دکمه‌های باز کردن دیالوگ -->
+    {% if user.email %}
+        <p>ایمیل فعلی: {{ user.email }}</p>
+        <button onclick="openDialog('emailDialog')">ویرایش ایمیل</button>
+    {% else %}
+        <button onclick="openDialog('emailDialog')">افزودن ایمیل</button>
+    {% endif %}
+    <button onclick="openDialog('passwordDialog')">تغییر رمز عبور</button>
+
+    <!-- دیالوگ تغییر ایمیل -->
+    <dialog id="emailDialog">
+        <form action="{% url 'change_email' %}" method="post">
+            {% csrf_token %}
+            {% if user.email %}
+            <p>ویرایش ایمیل</p>
+            <p><input type="email" name="email" placeholder="ایمیل جدید خود را وارد کنید"></p>
+            {% else %}
+            <p>افزودن ایمیل</p>
+            <p><input type="email" name="email" placeholder="ایمیل خود را وارد کنید"></p>
+            {% endif %}
+            <p><button type="submit">تایید</button></p>
+        </form>
+    </dialog>
+
+    <!-- دیالوگ تغییر رمز عبور -->
+    <dialog id="passwordDialog">
+        <form method="dialog">
+            <p><input type="password" name="old_password" placeholder="رمز عبور فعلی"></p>
+            <p><input type="password" name="new_password" placeholder="رمز عبور جدید"></p>
+            <p><input type="password" name="confirm_new_password" placeholder="تایید رمز عبور جدید"></p>
+            <p><button type="submit">ذخیره</button></p>
+        </form>
+    </dialog>
+
+    <h3>آدرس های من</h3>
+    {% if user_addresses %}
+        <p>شما آدرس‌های زیر را ثبت کرده‌اید:</p>
+        <ul>
+            {% for address in user_addresses %}
+                <li>{{ address.address }} در شهر {{ address.city }} در استان {{ address.state }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>شما هنوز هیچ آدرسی ثبت نکرده‌اید.</p>
+    {% endif %}
+
+    <!-- فرم خروج مخفی -->
+    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+        {% csrf_token %}
     </form>
-</dialog>
 
-<!-- دیالوگ تغییر رمز عبور -->
-<dialog id="passwordDialog">
-    <form method="dialog">
-        <p><input type="password" name="old_password" placeholder="رمز عبور فعلی"></p>
-        <p><input type="password" name="new_password" placeholder="رمز عبور جدید"></p>
-        <p><input type="password" name="confirm_new_password" placeholder="تایید رمز عبور جدید"></p>
-        <p><button type="submit">ذخیره</button></p>
-    </form>
-</dialog>
+    <!-- دکمه خروج که تابع JavaScript را فراخوانی می‌کند -->
+    <button type="button" onclick="confirmLogout()">خروج از حساب کاربری</button>
 
-<h3>آدرس های من</h3>
-{% if user_addresses %}
-    <p>شما آدرس‌های زیر را ثبت کرده‌اید:</p>
-    <ul>
-        {% for address in user_addresses %}
-            <li>{{ address.address }} در شهر {{ address.city }} در استان {{ address.state }}</li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>شما هنوز هیچ آدرسی ثبت نکرده‌اید.</p>
-{% endif %}
-
-<!-- فرم خروج مخفی -->
-<form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
-    {% csrf_token %}
-</form>
-
-<!-- دکمه خروج که تابع JavaScript را فراخوانی می‌کند -->
-<button type="button" onclick="confirmLogout()">خروج از حساب کاربری</button>
-
-<script>
-    function confirmLogout() {
-        var confirmed = confirm("آیا مطمئنید که می‌خواهید از حساب کاربری خودتان خارج شوید؟");
-        if (confirmed) {
-            document.getElementById('logout-form').submit();
-            alert("شما با موفقیت از حساب کاربری خودتون خارج شدین");
+    <script>
+        function confirmLogout() {
+            var confirmed = confirm("آیا مطمئنید که می‌خواهید از حساب کاربری خودتان خارج شوید؟");
+            if (confirmed) {
+                document.getElementById('logout-form').submit();
+                alert("شما با موفقیت از حساب کاربری خودتون خارج شدین");
+            }
         }
+        function openDialog(dialogId) {
+        var dialog = document.getElementById(dialogId);
+        dialog.showModal();
+
+        // بستن دیالوگ با کلید Escape
+        dialog.addEventListener('cancel', function(event) {
+            dialog.close();
+        });
     }
-    function openDialog(dialogId) {
-    var dialog = document.getElementById(dialogId);
-    dialog.showModal();
-
-    // بستن دیالوگ با کلید Escape
-    dialog.addEventListener('cancel', function(event) {
-        dialog.close();
-    });
-}
-
-</script>
-{% else %}
-<h2>دسترسی محدود</h2>
-<p>متاسفانه شما اجازه دسترسی به این صفحه را ندارید<br />اگر حساب کاربری ندارید از قسمت ورود با وارد کردن شماره تلفن خودتون حسابی بسازید و اگر حسابی دارید وارد حساب کاربریتون بشید و سپس به این قسمت مراجعه فرمایید</p>
-{% endif %}
-{% endblock %}
+    </script>
+    {% else %}
+    <h2>دسترسی محدود</h2>
+    <p>متاسفانه شما اجازه دسترسی به این صفحه را ندارید<br />اگر حساب کاربری ندارید از قسمت ورود با وارد کردن شماره تلفن خودتون حسابی بسازید و اگر حسابی دارید وارد حساب کاربریتون بشید و سپس به این قسمت مراجعه فرمایید</p>
+    {% endif %}
+    {% endblock %}

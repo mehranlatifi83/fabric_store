@@ -1,9 +1,11 @@
 # views.py
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
-from .forms import UserLoginForm, UserRegistrationForm, FabricForm, AddressForm
-from .models import Fabric, MyUser, State, City, Address
+from .forms import UserLoginForm, UserRegistrationForm, FabricForm, AddressForm, EmailChangeForm
+from .models import Fabric, MyUser, State, City, Address, EmailActivation
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 import json
@@ -192,3 +194,29 @@ def load_states_and_cities(request):
         return render(request, 'web/load_states_cities.html')
     else:
         return HttpResponse("شما اجازه دسترسی به این قسمت رو ندارین")
+
+def send_activation_email(email, activation_key):
+    #activation_url = f"{settings.SITE_URL}{reverse('email_activate', kwargs={'activation_key': activation_key})}"
+    #message = f"برای فعال‌سازی ایمیل خود بر روی لینک زیر کلیک کنید:\n{activation_url}"
+    #send_mail('فعال‌سازی ایمیل', message, settings.DEFAULT_FROM_EMAIL, [email])
+    print(f"{email} {activation_key}")
+
+def change_email_request(request):
+    if request.method == 'POST':
+        form = EmailChangeForm(request.POST)
+        if form.is_valid():
+            new_email = form.cleaned_data.get('email')
+            activation_record = EmailActivation.objects.create(user=request.user, email=new_email)
+            send_activation_email(new_email, activation_record.activation_key)
+            return render(request, "web/user_profile.html", {"message": "لینک فعال‌سازی به ایمیل شما ارسال شد."})
+def activate_email(request, activation_key):
+    try:
+        activation_record = EmailActivation.objects.get(activation_key=activation_key, is_activated=False)
+        user = activation_record.user
+        user.email = activation_record.email
+        user.save()
+        activation_record.is_activated = True
+        activation_record.save()
+        return HttpResponse("ایمیل شما با موفقیت تغییر یافت.")
+    except EmailActivation.DoesNotExist:
+        return HttpResponse("درخواست نامعتبر است.")

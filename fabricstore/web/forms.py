@@ -66,3 +66,6 @@ class AddressForm(forms.ModelForm):
                 self.fields['city'].queryset = City.objects.filter(state_id=state_id).order_by('name')
             except (ValueError, TypeError):
                 pass  # invalid input from the client; ignore and fallback to empty City queryset
+
+class EmailChangeForm(forms.Form):
+    email = forms.EmailField(label='ایمیل جدید')
