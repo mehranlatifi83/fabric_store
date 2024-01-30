@@ -219,10 +219,12 @@ def activate_email(request, activation_key):
         user.save()
         activation_record.is_activated = True
         activation_record.save()
-        send_mail(subject="فعالسازی ایمیل", message="ایمیل شما با موفقیت تغییر یافت\nبا تشکر. پارچه سرای محمد", from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[user.email], html_message=f'ایمیل شما با موفقیت تغییر یافت. برای ورود به سایت <a href="{settings.SITE_URL} کلیک نمایید\nبا تشکر پارچه سرای محمد"')
+        send_mail(subject="فعالسازی ایمیل", message="ایمیل شما با موفقیت تغییر یافت\nبا تشکر. پارچه سرای محمد", from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[user.email], html_message=f'ایمیل شما با موفقیت تغییر یافت. برای ورود به سایت <a href="{settings.SITE_URL}">اینجا</a> کلیک نمایید\nبا تشکر پارچه سرای محمد"')
         return render(request, "web/user_profile.html", {"message": "ایمیل شما با موفقیت تغییر یافت."})
     except EmailActivation.DoesNotExist:
         return render(request, "web/user_profile.html", {"message": "درخواست نامعتبر است."})
+    except Exception as e:
+        return render(request, "web/user_profile.html", {"message": "خطایی پیش آمده است. لطفا دوباره تلاش کنید. ممکن است ایمیل وارد شده تکراری باشد"})
 
 def change_password(request):
     if request.method == 'POST':

@@ -25,10 +25,10 @@
             {% csrf_token %}
             {% if user.email %}
             <p>ویرایش ایمیل</p>
-            <p><input type="email" name="email" placeholder="ایمیل جدید خود را وارد کنید"></p>
+            <p><input type="email" name="email" placeholder="ایمیل جدید خود را وارد کنید" required></p>
             {% else %}
             <p>افزودن ایمیل</p>
-            <p><input type="email" name="email" placeholder="ایمیل خود را وارد کنید"></p>
+            <p><input type="email" name="email" placeholder="ایمیل خود را وارد کنید" required></p>
             {% endif %}
             <p><button type="submit">تایید</button></p>
         </form>
@@ -38,9 +38,9 @@
     <dialog id="passwordDialog">
         <form action="{% url 'change_password' %}" method="post">
             {% csrf_token %}
-            <p><input type="password" name="old_password" placeholder="رمز عبور فعلی"></p>
-            <p><input type="password" name="new_password1" placeholder="رمز عبور جدید"></p>
-            <p><input type="password" name="new_password2" placeholder="تایید رمز عبور جدید"></p>
+            <p><input type="password" name="old_password" placeholder="رمز عبور فعلی" required></p>
+            <p><input type="password" name="new_password1" placeholder="رمز عبور جدید" required></p>
+            <p><input type="password" name="new_password2" placeholder="تایید رمز عبور جدید" required></p>
             <p><button type="submit">ذخیره</button></p>
         </form>
     </dialog>

@@ -16,7 +16,7 @@
             </div>
 
         <div>
-            <input type="text" name="first_name" placeholder="نام">
+            <input type="text" name="first_name" placeholder="نام" required>
             {% if form.first_name.errors %}
                 <div class="error">
                     {{ form.first_name.errors }}
@@ -25,7 +25,7 @@
         </div>
 
         <div>
-            <input type="text" name="last_name" placeholder="نام خانوادگی">
+            <input type="text" name="last_name" placeholder="نام خانوادگی" required>
             {% if form.last_name.errors %}
                 <div class="error">
                     {{ form.last_name.errors }}
@@ -34,7 +34,7 @@
         </div>
 
         <div>
-            <input type="password" name="password1" placeholder="پسورد">
+            <input type="password" name="password1" placeholder="پسورد" required>
             {% if form.password1.errors %}
                 <div class="error">
                     {{ form.password1.errors }}
@@ -43,7 +43,7 @@
         </div>
 
         <div>
-            <input type="password" name="password2" placeholder="تایید پسورد">
+            <input type="password" name="password2" placeholder="تایید پسورد"required>
             {% if form.password2.errors %}
                 <div class="error">
                     {{ form.password2.errors }}
