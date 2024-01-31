@@ -227,13 +227,13 @@ def activate_email(request, activation_key):
         return render(request, "web/user_profile.html", {"message": "خطایی پیش آمده است. لطفا دوباره تلاش کنید. ممکن است ایمیل وارد شده تکراری باشد"})
 
 def change_password(request):
+    error_in_password_change = False
     if request.method == 'POST':
         form = CustomPasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            print(user)
             update_session_auth_hash(request, user)  # به روز رسانی session برای جلوگیری از خروج کاربر
             return render(request, "web/user_profile.html", {"message": "رمز عبور شما با موفقیت تغییر کرد"})
         else:
-            message = "خطایی در تغییر رمز عبور پیش آمد. لطفا دوباره امتحان کنید"
-            return render(request, "web/user_profile.html", {"message": message})
+            error_in_password_change = True
+            return render(request, "web/user_profile.html", {"error_in_password_change": error_in_password_change, "form": form})

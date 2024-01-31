@@ -5,7 +5,9 @@
     {% if user.is_authenticated %}
         {% if message %}
             <script>alert("{{ message }}")</script>
-            {% endif %}
+            {% elif error_in_password_change %}
+            <script>document.addEventListener('DOMContentLoaded', function() { openDialog('passwordDialog'); });</script>
+        {% endif %}
     <h2>اطلاعات حساب من</h2>
     <p>نام من: {{ user.first_name }}</p>
     <p>نام خانوادگی من: {{ user.last_name }}</p>
@@ -38,9 +40,33 @@
     <dialog id="passwordDialog">
         <form action="{% url 'change_password' %}" method="post">
             {% csrf_token %}
-            <p><input type="password" name="old_password" placeholder="رمز عبور فعلی" required></p>
-            <p><input type="password" name="new_password1" placeholder="رمز عبور جدید" required></p>
-            <p><input type="password" name="new_password2" placeholder="تایید رمز عبور جدید" required></p>
+            <div>
+                <p><input type="password" name="old_password" placeholder="رمز عبور فعلی" required></p>
+                {% if form.old_password.errors %}
+                    <div class="error">
+                        {{ form.old_password.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div>
+                <p><input type="password" name="new_password1" placeholder="رمز عبور جدید" required></p>
+                {% if form.new_password1.errors %}
+                    <div class="error">
+                        {{ form.new_password1.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div>
+                <p><input type="password" name="new_password2" placeholder="تایید رمز عبور جدید" required></p>
+                {% if form.new_password2.errors %}
+                    <div class="error">
+                        {{ form.new_password2.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
             <p><button type="submit">ذخیره</button></p>
         </form>
     </dialog>
