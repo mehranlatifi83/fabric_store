@@ -202,15 +202,20 @@ def send_activation_email(email, activation_key):
     send_mail(subject='فعال‌سازی ایمیل', message=message, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[email], html_message=html_message)
 
 def change_email_request(request):
+    error_in_email_change = False
+    email_error_message = ""
     if request.method == 'POST':
         form = EmailChangeForm(request.POST)
         if form.is_valid():
             new_email = form.cleaned_data.get('email')
-            if request.user.email == new_email:
-                return render(request, "web/user_profile.html", {"message": "ایمیل وارد شده با ایمیل فعلی شما یکسان است."})
-            activation_record = EmailActivation.objects.create(user=request.user, email=new_email)
-            send_activation_email(new_email, activation_record.activation_key)
-            return render(request, "web/user_profile.html", {"message": "لینک فعال‌سازی به ایمیل شما ارسال شد."})
+            if MyUser.objects.filter(email=new_email).exists():
+                email_error_message = "ایمیل وارد شده تکراری می‌باشد."
+                error_in_email_change = True
+            else:
+                activation_record = EmailActivation.objects.create(user=request.user, email=new_email)
+                send_activation_email(new_email, activation_record.activation_key)
+                return render(request, "web/user_profile.html", {"message": "لینک فعال‌سازی به ایمیل شما ارسال شد."})
+    return render(request, "web/user_profile.html", {"error_in_email_change": error_in_email_change, "email_error_message": email_error_message})
 def activate_email(request, activation_key):
     try:
         activation_record = EmailActivation.objects.get(activation_key=activation_key, is_activated=False)

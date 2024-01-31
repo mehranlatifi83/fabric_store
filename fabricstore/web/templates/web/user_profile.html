@@ -5,7 +5,7 @@
     {% if user.is_authenticated %}
         {% if message %}
             <script>alert("{{ message }}")</script>
-            {% elif error_in_password_change %}
+        {% elif error_in_password_change %}
             <script>document.addEventListener('DOMContentLoaded', function() { openDialog('passwordDialog'); });</script>
         {% endif %}
     <h2>اطلاعات حساب من</h2>
@@ -31,6 +31,10 @@
             {% else %}
             <p>افزودن ایمیل</p>
             <p><input type="email" name="email" placeholder="ایمیل خود را وارد کنید" required></p>
+            {% endif %}
+            {% if error_in_email_change %}
+            <script>document.addEventListener('DOMContentLoaded', function() { openDialog('emailDialog'); });</script>
+            <div class="error">{{ email_error_message }}</div>
             {% endif %}
             <p><button type="submit">تایید</button></p>
         </form>
