@@ -71,10 +71,26 @@ def user_register(request, phone):
         form = UserRegistrationForm(initial={'phone': phone})
     return render(request, 'web/register.html', {'form': form, "phone": phone})
 
-
 def user_profile(request):
     user_addresses = Address.objects.filter(user=request.user)
-    return render(request, 'web/user_profile.html', {"user_addresses": user_addresses})
+    active_email_change = EmailActivation.objects.filter(user=request.user).last()
+
+    if active_email_change:
+        email_status = "در انتظار تایید"
+        current_email = active_email_change.email
+    else:
+        email_status = "تایید شده"
+        current_email = request.user.email
+
+    params = request.session.pop('user_profile_params', {})
+    return render(request, 'web/user_profile.html', {
+        "user_addresses": user_addresses,
+        "email_status": email_status,
+        "current_email": current_email,
+        "active_email_change": active_email_change,
+        **params
+    })
+
 
 def admin_settings(request):
     users = MyUser.objects.all()
@@ -102,6 +118,7 @@ def edit_user(request, user_id):
             if form.cleaned_data.get('password1'):
                 user.password = make_password(form.cleaned_data.get('password1'))
             user.save()
+            update_session_auth_hash(request, user)  # به روز رسانی session برای جلوگیری از خروج کاربر
             return redirect('admin_settings')
     else:
         form = UserRegistrationForm(instance=user)
@@ -196,10 +213,11 @@ def load_states_and_cities(request):
         return HttpResponse("شما اجازه دسترسی به این قسمت رو ندارین")
 
 def send_activation_email(email, activation_key):
-    activation_url = f"{settings.SITE_URL}{reverse('email_activate', kwargs={'activation_key': activation_key})}"
-    message = f"برای فعالسازی ایمیل خود بر روی لینک زیر کلیک کنید\n{activation_url}\nبا تشکر. پارچه سرای محمد"
-    html_message = f'برای فعال‌سازی ایمیل خود <a href="{activation_url}">اینجا</a> کلیک کنید\nبا تشکر. پارچه سرای محمد'
-    send_mail(subject='فعال‌سازی ایمیل', message=message, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[email], html_message=html_message)
+    #activation_url = f"{settings.SITE_URL}{reverse('email_activate', kwargs={'activation_key': activation_key})}"
+    #message = f"برای فعالسازی ایمیل خود بر روی لینک زیر کلیک کنید\n{activation_url}\nبا تشکر. پارچه سرای محمد"
+    #html_message = f'برای فعال‌سازی ایمیل خود <a href="{activation_url}">اینجا</a> کلیک کنید\nبا تشکر. پارچه سرای محمد'
+    #send_mail(subject='فعال‌سازی ایمیل', message=message, from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[email], html_message=html_message)
+    print(activation_key)
 
 def change_email_request(request):
     error_in_email_change = False
@@ -214,22 +232,37 @@ def change_email_request(request):
             else:
                 activation_record = EmailActivation.objects.create(user=request.user, email=new_email)
                 send_activation_email(new_email, activation_record.activation_key)
-                return render(request, "web/user_profile.html", {"message": "لینک فعال‌سازی به ایمیل شما ارسال شد."})
-    return render(request, "web/user_profile.html", {"error_in_email_change": error_in_email_change, "email_error_message": email_error_message})
+                request.session["user_profile_params"] = {"message": "لینک فعال‌سازی به ایمیل شما ارسال شد."}
+                return redirect('user_profile')
+    request.session["user_profile_params"] = {"error_in_email_change": error_in_email_change, "email_error_message": email_error_message}
+    return redirect('user_profile')
 def activate_email(request, activation_key):
     try:
         activation_record = EmailActivation.objects.get(activation_key=activation_key, is_activated=False)
         user = activation_record.user
         user.email = activation_record.email
         user.save()
-        activation_record.is_activated = True
-        activation_record.save()
+        update_session_auth_hash(request, user)  # به روز رسانی session برای جلوگیری از خروج کاربر
+        activation_record.delete()
         send_mail(subject="فعالسازی ایمیل", message="ایمیل شما با موفقیت تغییر یافت\nبا تشکر. پارچه سرای محمد", from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[user.email], html_message=f'ایمیل شما با موفقیت تغییر یافت. برای ورود به سایت <a href="{settings.SITE_URL}">اینجا</a> کلیک نمایید\nبا تشکر پارچه سرای محمد"')
-        return render(request, "web/user_profile.html", {"message": "ایمیل شما با موفقیت تغییر یافت."})
+        request.session["user_profile_params"] = {"message": "ایمیل شما با موفقیت تغییر یافت."}
+        return redirect('user_profile')
     except EmailActivation.DoesNotExist:
-        return render(request, "web/user_profile.html", {"message": "درخواست نامعتبر است."})
+        request.session["user_profile_params"] = {"message": "درخواست نامعتبر است."}
+        return redirect('user_profile')
     except Exception as e:
-        return render(request, "web/user_profile.html", {"message": "خطایی پیش آمده است. لطفا دوباره تلاش کنید. ممکن است ایمیل وارد شده تکراری باشد"})
+        request.session["user_profile_params"] = {"message": "خطایی پیش آمده است. لطفا دوباره تلاش کنید. ممکن است ایمیل وارد شده تکراری باشد"}
+        return redirect('user_profile')
+
+def resend_activation_email(request, activation_id):
+    try:
+        activation_record = EmailActivation.objects.get(id=activation_id, user=request.user, is_activated=False)
+        send_activation_email(activation_record.email, activation_record.activation_key)
+        request.session["user_profile_params"] = {"message": "لینک فعال‌سازی مجدداً به ایمیل شما ارسال شد."}
+        return redirect('user_profile')
+    except EmailActivation.DoesNotExist:
+        request.session["user_profile_params"] = {"message": "درخواست نامعتبر است."}
+        return redirect('user_profile')
 
 def change_password(request):
     error_in_password_change = False
@@ -238,7 +271,9 @@ def change_password(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # به روز رسانی session برای جلوگیری از خروج کاربر
-            return render(request, "web/user_profile.html", {"message": "رمز عبور شما با موفقیت تغییر کرد"})
+            request.session["user_profile_params"] = {"message": "رمز عبور شما با موفقیت تغییر کرد"}
+            return redirect('user_profile')
         else:
             error_in_password_change = True
-            return render(request, "web/user_profile.html", {"error_in_password_change": error_in_password_change, "form": form})
+            request.session["user_profile_params"] = {"error_in_password_change": error_in_password_change, "form": form}
+            return redirect('user_profile')

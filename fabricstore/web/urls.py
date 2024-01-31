@@ -1,7 +1,7 @@
 # urls.py
 from django.urls import path
 from .views import index, search, user_login, password_login, user_register, user_profile, admin_settings, add_user, edit_user, delete_user, add_fabric, edit_fabric, delete_fabric
-from .views import add_address, edit_address, delete_address, load_cities, load_states_and_cities, change_email_request, activate_email, change_password
+from .views import add_address, edit_address, delete_address, load_cities, load_states_and_cities, change_email_request, activate_email, change_password, resend_activation_email
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -27,4 +27,5 @@ urlpatterns = [
     path("change_email/", change_email_request, name="change_email"),
     path("activate_email/<uuid:activation_key>/", activate_email, name="email_activate"),
     path("change_password/", change_password, name="change_password"),
+    path("resend_activation_email/<str:activation_id>/", resend_activation_email, name="resend_activation"),
 ]
