@@ -4,11 +4,11 @@
 {% block content %}
 {% if user.is_authenticated and user.is_admin %}
     <h2>{% if user_object.id %}ویرایش کاربر{% else %}افزودن کاربر جدید{% endif %}</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">ذخیره</button>
-    </form>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">ذخیره</button>
+        </form>
 {% else %}
     <h2>دسترسی محدود</h2>
     <p>متاسفانه شما اجازه دسترسی به این صفحه را ندارید.</p>

@@ -117,8 +117,8 @@ def edit_user(request, user_id):
             # به‌روزرسانی پسورد اگر وارد شده باشد
             if form.cleaned_data.get('password1'):
                 user.password = make_password(form.cleaned_data.get('password1'))
-            user.save()
             update_session_auth_hash(request, user)  # به روز رسانی session برای جلوگیری از خروج کاربر
+            user.save()
             return redirect('admin_settings')
     else:
         form = UserRegistrationForm(instance=user)
@@ -241,8 +241,9 @@ def activate_email(request, activation_key):
         activation_record = EmailActivation.objects.get(activation_key=activation_key, is_activated=False)
         user = activation_record.user
         user.email = activation_record.email
-        user.save()
         update_session_auth_hash(request, user)  # به روز رسانی session برای جلوگیری از خروج کاربر
+        user.save()
+
         activation_record.delete()
         send_mail(subject="فعالسازی ایمیل", message="ایمیل شما با موفقیت تغییر یافت\nبا تشکر. پارچه سرای محمد", from_email=settings.DEFAULT_FROM_EMAIL, recipient_list=[user.email], html_message=f'ایمیل شما با موفقیت تغییر یافت. برای ورود به سایت <a href="{settings.SITE_URL}">اینجا</a> کلیک نمایید\nبا تشکر پارچه سرای محمد"')
         request.session["user_profile_params"] = {"message": "ایمیل شما با موفقیت تغییر یافت."}
